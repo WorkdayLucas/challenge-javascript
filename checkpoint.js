@@ -33,7 +33,9 @@ const {
 // < 16
 
 function exponencial(exp) {
+   return function(exp){
 
+   }
 }
 
 // ----- Recursión -----
@@ -71,6 +73,53 @@ function exponencial(exp) {
 
 function direcciones(laberinto) {
 
+    if(typeof laberinto !== "object") return "";
+     
+    let rumbo = ""
+    let current = laberinto
+    
+    
+    if(current.N!=="pared"){
+     if(current.N=='destino'){
+       rumbo = "N"
+     }else{
+       current = current.N
+       rumbo = "N";
+       rumbo = rumbo.concat(direcciones(current));
+     }
+     
+    }else if(current.S!=="pared"){
+     if(current.S=='destino'){
+       rumbo = "S"
+     }else{
+       current = current.S
+   
+       rumbo = "S";
+       rumbo = rumbo.concat(direcciones(current))
+     }
+     
+    }else if(current.E!=="pared"){
+     if(current.E=='destino'){
+       rumbo = "E"
+     }else{
+       current = current.E
+       rumbo = "E";
+       rumbo = rumbo.concat(direcciones(current))
+     }
+     
+    }else if(current.O!=="pared"){
+     if(current.O=='destino'){
+       rumbo = "O"
+     }else{
+       current = current.O
+       rumbo = "O";
+       rumbo = rumbo.concat(direcciones(current))
+     }
+     
+ 
+    }
+ 
+    return rumbo
 }
 
 
@@ -88,6 +137,24 @@ function direcciones(laberinto) {
 // deepEqualArrays([0,1,[[0,1,2],1,2]], [0,1,[[0,1,2],1,2]]) => true
 
 function deepEqualArrays(arr1, arr2) {
+    if (arr1.length != arr2.length) return false;
+
+  for(let i=0; i < arr1.length;i++){
+    if(typeof arr1[i] == "object" && typeof arr2[i] == "object"){
+      if(deepEqualArrays(arr1[i], arr2[i]) == true){
+        continue
+      }else{
+        return false
+      }
+    }else if(arr1[i] === arr2[i]){
+      continue
+    }else{
+      return false
+    }
+  }
+
+  return true
+
 
 }
 
@@ -139,6 +206,30 @@ OrderedLinkedList.prototype.print = function(){
 // < 'head --> 5 --> 3 --> 1 --> null'
 //               4
 OrderedLinkedList.prototype.add = function(val){
+    var node = new Node(val);
+    let current = this.head;
+    let prev = this.head;
+
+    if(this.head===null){
+        this.head = node;
+    }else{
+      if(val > current.value){
+        node.next = current
+        this.head = node
+      }else{
+        while(current.next){
+          prev = current
+          current = current.next
+          if(val > current.value){
+             node.next = current
+             prev.next = node
+             return null
+          }
+        }
+        current.next = node
+      }
+     
+    }
     
 }
 
@@ -159,7 +250,12 @@ OrderedLinkedList.prototype.add = function(val){
 // < null
 
 OrderedLinkedList.prototype.removeHigher = function(){
+    if(this.head===null) return null;
     
+    let value = this.head.value
+    let next = this.head.next
+    this.head = next
+    return value
 }
 
 
@@ -179,7 +275,23 @@ OrderedLinkedList.prototype.removeHigher = function(){
 // < null
 
 OrderedLinkedList.prototype.removeLower = function(){
+    if(this.head==null){
+        return null
     
+     }else if(this.head.next==null){
+        let value = this.head.value
+        this.head = null
+        return value
+    
+     }
+       let current = this.head
+       while(current.next.next){
+        current = current.next
+       }
+       let value = current.next.value
+       current.next = null
+       return value
+      
 }
 
 
@@ -212,7 +324,20 @@ OrderedLinkedList.prototype.removeLower = function(){
 // < ["2-1", "1-1", "1-2", "2-2"];
 
 function multiCallbacks(cbs1, cbs2){
-    
+    let arr = cbs1.concat(cbs2)
+    let ordArr = []
+
+    for(let i=1; i<=arr.length; i++){
+       for(obj in arr){
+           if(i == arr[obj].time){
+            ordArr.push(arr[obj].cb())
+            break
+           }
+       }
+     
+    }
+
+    return ordArr
 }
 
 
@@ -228,10 +353,27 @@ function multiCallbacks(cbs1, cbs2){
 //   8   64
 //  / \
 // 5   9
-// resultado:[5,8,9,32,64]
+// resultado:[5,8,9,32,64] [32,8,5,9,64] [5,9,8,64,32]
 
 BinarySearchTree.prototype.toArray = function() {
     
+    var array = []
+    
+    if(this.left){
+        array = array.concat(this.left.toArray())
+    }
+
+    array.push(this.value)
+    
+    if(this.right){
+        array = array.concat(this.right.toArray())
+    }
+
+    
+
+    return array
+    
+
 }
 
 
@@ -250,6 +392,19 @@ BinarySearchTree.prototype.toArray = function() {
 // informarse sobre algoritmos, leerlos de un pseudocodigo e implemnterlos alcanzara
 
 function primalityTest(n) {
+    if (n <= 3) return n > 1;
+  
+  if ((n % 2 === 0) || (n % 3 === 0)) return false;
+  
+  let count = 5;
+  
+  while (Math.pow(count, 2) <= n) {
+    if (n % count === 0 || n % (count + 2) === 0) return false;
+    
+    count += 6;
+  }
+  
+  return true;
     
 }
 
